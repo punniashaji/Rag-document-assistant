@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        RAG Document Assistant
+    </title>
+
+
+    <!-- Bootstrap -->
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+
+    <!-- Bootstrap Icons -->
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+        rel="stylesheet"
+    >
+
+
+    <!-- Custom CSS -->
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<!-- ====================================
+     NAVBAR
+==================================== -->
+
+<nav class="navbar navbar-dark bg-dark">
+
+    <div class="container">
+
+        <a
+            class="navbar-brand fw-bold"
+            href="#"
+        >
+
+            <i class="bi bi-robot me-2"></i>
+
+            RAG Assistant
+
+        </a>
+
+
+        <span class="badge text-bg-success">
+
+            <i class="bi bi-circle-fill me-1"></i>
+
+            Online
+
+        </span>
+
+    </div>
+
+</nav>
+
+
+
+<!-- ====================================
+     MAIN
+==================================== -->
+
+<main class="container">
+
+
+    <!-- HERO -->
+
+    <section class="hero text-center">
+
+        <div class="icon-box mx-auto mb-4">
+
+            <i class="bi bi-stars"></i>
+
+        </div>
+
+
+        <h1 class="fw-bold">
+
+            Ask Your Documents
+
+        </h1>
+
+
+        <p class="text-secondary">
+
+            Upload a PDF and ask questions
+            about its content.
+
+        </p>
+
+    </section>
+
+
+
+    <!-- ====================================
+         DOCUMENT CARD
+    ==================================== -->
+
+    <section class="card main-card shadow-sm border-0">
+
+        <div class="card-body p-4">
+
+
+            <!-- HEADING -->
+
+            <div class="card-heading">
+
+                <div class="section-icon">
+
+                    <i class="bi bi-file-earmark-pdf"></i>
+
+                </div>
+
+
+                <div>
+
+                    <h5 class="fw-bold mb-1">
+
+                        Your Document
+
+                    </h5>
+
+
+                    <p class="text-secondary mb-0">
+
+                        Upload a PDF and ask questions
+                        about it.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ====================================
+                 UPLOAD
+            ==================================== -->
+
+            <div class="upload-area">
+
+                <input
+                    type="file"
+                    id="pdfFile"
+                    accept=".pdf,application/pdf"
+                    hidden
+                >
+
+
+                <label
+                    for="pdfFile"
+                    class="file-selector"
+                >
+
+                    <i class="bi bi-file-earmark-arrow-up"></i>
+
+
+                    <div>
+
+                        <strong id="fileLabel">
+
+                            Choose a PDF
+
+                        </strong>
+
+
+                        <small>
+
+                            PDF files only
+
+                        </small>
+
+                    </div>
+
+                </label>
+
+
+
+                <button
+                    type="button"
+                    id="uploadButton"
+                    class="btn btn-dark upload-btn"
+                >
+
+                    <i
+                        class="bi bi-cloud-arrow-up me-2"
+                    ></i>
+
+                    Upload PDF
+
+                </button>
+
+            </div>
+
+
+
+            <!-- ====================================
+                 STATUS
+            ==================================== -->
+
+            <div
+                id="documentStatusBox"
+                class="document-status d-none"
+            >
+
+                <div class="document-status-icon">
+
+                    <i
+                        id="statusIcon"
+                        class="bi bi-file-earmark-pdf"
+                    ></i>
+
+                </div>
+
+
+                <div class="document-info">
+
+                    <strong id="documentName">
+
+                        document.pdf
+
+                    </strong>
+
+
+                    <span id="documentStatus">
+
+                        Ready
+
+                    </span>
+
+
+                    <div
+                        id="uploadProgress"
+                        class="upload-progress d-none"
+                    >
+
+                        <div
+                            id="uploadProgressBar"
+                            class="upload-progress-bar"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ====================================
+                 PDF PREVIEW
+            ==================================== -->
+
+            <div
+                id="pdfPreviewContainer"
+                class="pdf-preview-container d-none"
+            >
+
+
+                <!-- PLACEHOLDER -->
+
+                <div
+                    id="pdfPreviewPlaceholder"
+                    class="pdf-preview-placeholder"
+                >
+
+                    <div class="pdf-preview-icon">
+
+                        <i class="bi bi-file-earmark-pdf"></i>
+
+                    </div>
+
+
+                    <strong id="previewFileName">
+
+                        document.pdf
+
+                    </strong>
+
+
+                    <span>
+
+                        PDF selected
+
+                    </span>
+
+
+                    <button
+                        type="button"
+                        id="openPreviewButton"
+                        class="btn btn-outline-dark btn-sm"
+                    >
+
+                        <i class="bi bi-eye me-1"></i>
+
+                        Preview PDF
+
+                    </button>
+
+                </div>
+
+
+
+                <!-- VIEWER -->
+
+                <div
+                    id="pdfViewerWrapper"
+                    class="pdf-viewer-wrapper d-none"
+                >
+
+                    <div class="pdf-viewer-header">
+
+                        <span>
+
+                            <i
+                                class="bi bi-file-earmark-pdf me-2"
+                            ></i>
+
+                            <span id="viewerFileName">
+
+                                document.pdf
+
+                            </span>
+
+                        </span>
+
+
+                        <button
+                            type="button"
+                            id="closePreviewButton"
+                            class="btn btn-sm btn-outline-light"
+                        >
+
+                            <i class="bi bi-x-lg"></i>
+
+                            Close
+
+                        </button>
+
+                    </div>
+
+
+                    <iframe
+                        id="pdfViewer"
+                        title="PDF Preview"
+                    ></iframe>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- DIVIDER -->
+
+            <div class="card-divider"></div>
+
+
+
+            <!-- ====================================
+                 QUESTION
+            ==================================== -->
+
+            <div class="question-section">
+
+
+                <div class="question-title">
+
+                    <i class="bi bi-chat-left-text"></i>
+
+                    <span>
+
+                        Ask about your document
+
+                    </span>
+
+                </div>
+
+
+                <p class="question-hint">
+
+                    Ask anything about the information
+                    contained in your PDF.
+
+                </p>
+
+
+
+                <div class="question-box">
+
+
+                    <textarea
+                        id="question"
+                        rows="3"
+                        placeholder="Ask a question about your document..."
+                    ></textarea>
+
+
+                    <button
+                        type="button"
+                        id="askButton"
+                        title="Ask question"
+                    >
+
+                        <i class="bi bi-arrow-up"></i>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ====================================
+         ANSWER CARD
+    ==================================== -->
+
+    <section
+        id="answerCard"
+        class="card answer-card shadow-sm border-0 d-none"
+    >
+
+        <div class="card-body p-4">
+
+
+            <div class="answer-heading">
+
+                <div class="answer-icon">
+
+                    <i class="bi bi-stars"></i>
+
+                </div>
+
+
+                <div>
+
+                    <h5 class="fw-bold mb-1">
+
+                        Answer
+
+                    </h5>
+
+
+                    <small class="text-secondary">
+
+                        Generated from your document
+
+                    </small>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- LOADING -->
+
+            <div
+                id="loading"
+                class="answer-loading d-none"
+            >
+
+                <div
+                    class="spinner-border spinner-border-sm"
+                ></div>
+
+
+                <span>
+
+                    Searching your document...
+
+                </span>
+
+            </div>
+
+
+
+            <!-- ANSWER -->
+
+            <div
+                id="answer"
+                class="answer-text d-none"
+            ></div>
+
+
+
+            <!-- ERROR -->
+
+            <div
+                id="error"
+                class="error-message d-none"
+            ></div>
+
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+
+<!-- ====================================
+     FOOTER
+==================================== -->
+
+<footer>
+
+    <small>
+
+        Built with LlamaIndex • LanceDB •
+        Hugging Face • Gemini
+
+    </small>
+
+</footer>
+
+
+
+<!-- <script src="script.js"></script> -->
+<script src="script.js?v=2"></script> 
+
+</body>
+
+</html>

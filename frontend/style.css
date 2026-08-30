@@ -1,0 +1,858 @@
+/* ====================================
+   GLOBAL
+==================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+
+    background: #f6f7fb;
+
+    color: #212529;
+}
+
+
+/* ====================================
+   NAVBAR
+==================================== */
+
+.navbar {
+    padding: 16px 0;
+}
+
+
+/* ====================================
+   HERO
+==================================== */
+
+.hero {
+    padding: 65px 20px 35px;
+}
+
+.hero h1 {
+    font-size: 42px;
+    letter-spacing: -1px;
+}
+
+.hero p {
+    font-size: 17px;
+}
+
+
+/* ====================================
+   ICON
+==================================== */
+
+.icon-box {
+
+    width: 68px;
+    height: 68px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: #212529;
+
+    color: white;
+
+    border-radius: 18px;
+
+    font-size: 28px;
+}
+
+
+/* ====================================
+   MAIN CARD
+==================================== */
+
+.main-card {
+
+    max-width: 850px;
+
+    margin: auto;
+
+    border-radius: 20px;
+}
+
+
+/* ====================================
+   CARD HEADING
+==================================== */
+
+.card-heading {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+}
+
+.section-icon {
+
+    width: 46px;
+    height: 46px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: #212529;
+
+    color: white;
+
+    border-radius: 12px;
+
+    font-size: 20px;
+}
+
+
+/* ====================================
+   UPLOAD AREA
+==================================== */
+
+.upload-area {
+
+    display: flex;
+
+    gap: 12px;
+
+    align-items: center;
+
+    margin-top: 25px;
+}
+
+.file-selector {
+
+    flex: 1;
+
+    min-height: 52px;
+
+    padding: 10px 15px;
+
+    border: 1px solid #dee2e6;
+
+    border-radius: 12px;
+
+    background: #fff;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.file-selector:hover {
+
+    border-color: #adb5bd;
+
+    background: #fafafa;
+}
+
+.file-selector > i {
+
+    font-size: 24px;
+
+    color: #dc3545;
+}
+
+.file-selector strong {
+
+    display: block;
+
+    font-size: 14px;
+
+    max-width: 100%;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+.file-selector small {
+
+    display: block;
+
+    color: #6c757d;
+
+    margin-top: 2px;
+}
+
+
+/* ====================================
+   UPLOAD BUTTON
+==================================== */
+
+.upload-btn {
+
+    height: 52px;
+
+    border-radius: 12px;
+
+    padding-left: 20px;
+
+    padding-right: 20px;
+
+    white-space: nowrap;
+}
+
+.upload-btn:disabled {
+
+    opacity: 0.65;
+
+    cursor: not-allowed;
+}
+
+
+/* ====================================
+   DOCUMENT STATUS
+==================================== */
+
+.document-status {
+
+    margin-top: 15px;
+
+    padding: 14px;
+
+    border-radius: 12px;
+
+    display: flex;
+
+    align-items: center;
+}
+
+.document-status.selected,
+.document-status.uploading {
+
+    background: #f8f9fa;
+
+    border: 1px solid #dee2e6;
+}
+
+.document-status.success {
+
+    background: #f0fdf4;
+
+    border: 1px solid #bbf7d0;
+}
+
+.document-status.failed {
+
+    background: #fff5f5;
+
+    border: 1px solid #fecaca;
+}
+
+
+.document-status-icon {
+
+    width: 40px;
+    height: 40px;
+
+    flex-shrink: 0;
+
+    border-radius: 10px;
+
+    background: white;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: #dc3545;
+
+    font-size: 20px;
+}
+
+.document-info {
+
+    margin-left: 12px;
+
+    flex: 1;
+
+    min-width: 0;
+}
+
+.document-info strong {
+
+    display: block;
+
+    font-size: 14px;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+.document-info span {
+
+    display: block;
+
+    font-size: 12px;
+
+    margin-top: 2px;
+}
+
+
+/* FIXED SELECTORS */
+
+.document-status.success .document-info span {
+
+    color: #198754;
+}
+
+.document-status.failed .document-info span {
+
+    color: #dc3545;
+}
+
+.document-status.uploading .document-info span {
+
+    color: #6c757d;
+}
+
+
+/* ====================================
+   SPINNER ICON
+==================================== */
+
+.spin {
+
+    animation:
+        spin 1s linear infinite;
+}
+
+@keyframes spin {
+
+    to {
+
+        transform:
+            rotate(360deg);
+
+    }
+
+}
+
+
+/* ====================================
+   PROGRESS
+==================================== */
+
+.upload-progress {
+
+    height: 5px;
+
+    margin-top: 8px;
+
+    overflow: hidden;
+
+    border-radius: 999px;
+
+    background: #dee2e6;
+}
+
+.upload-progress-bar {
+
+    width: 0;
+
+    height: 100%;
+
+    border-radius: inherit;
+
+    background: #212529;
+
+    transition:
+        width 0.2s ease;
+}
+
+
+/* ====================================
+   PDF PREVIEW
+==================================== */
+
+.pdf-preview-container {
+
+    margin-top: 18px;
+
+    border: 1px solid #dee2e6;
+
+    border-radius: 15px;
+
+    background: #f8f9fa;
+
+    overflow: hidden;
+}
+
+.pdf-preview-placeholder {
+
+    min-height: 240px;
+
+    padding: 30px 20px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+}
+
+.pdf-preview-icon {
+
+    width: 65px;
+    height: 65px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: white;
+
+    border: 1px solid #dee2e6;
+
+    border-radius: 14px;
+
+    color: #dc3545;
+
+    font-size: 32px;
+
+    margin-bottom: 15px;
+}
+
+.pdf-preview-placeholder strong {
+
+    font-size: 15px;
+
+    max-width: 90%;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+.pdf-preview-placeholder span {
+
+    color: #6c757d;
+
+    font-size: 13px;
+
+    margin-top: 5px;
+
+    margin-bottom: 15px;
+}
+
+
+/* ====================================
+   PDF VIEWER
+==================================== */
+
+.pdf-viewer-wrapper {
+
+    background: #343a40;
+}
+
+.pdf-viewer-header {
+
+    min-height: 48px;
+
+    padding: 8px 12px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+    color: white;
+
+    font-size: 13px;
+}
+
+.pdf-viewer-header > span {
+
+    min-width: 0;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+#pdfViewer {
+
+    display: block;
+
+    width: 100%;
+
+    height: clamp(
+        420px,
+        70vh,
+        700px
+    );
+
+    border: none;
+
+    background: white;
+}
+
+
+/* ====================================
+   DIVIDER
+==================================== */
+
+.card-divider {
+
+    height: 1px;
+
+    background: #e9ecef;
+
+    margin: 28px 0;
+}
+
+
+/* ====================================
+   QUESTION
+==================================== */
+
+.question-title {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    font-weight: 600;
+
+    font-size: 15px;
+}
+
+.question-title i {
+
+    font-size: 17px;
+}
+
+.question-hint {
+
+    color: #6c757d;
+
+    font-size: 13px;
+
+    margin-top: 5px;
+
+    margin-bottom: 12px;
+}
+
+
+/* ====================================
+   QUESTION BOX
+==================================== */
+
+.question-box {
+
+    position: relative;
+
+    border: 1px solid #dee2e6;
+
+    border-radius: 15px;
+
+    background: white;
+
+    padding: 12px;
+}
+
+.question-box:focus-within {
+
+    border-color: #adb5bd;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(
+            33,
+            37,
+            41,
+            0.06
+        );
+}
+
+.question-box textarea {
+
+    width: 100%;
+
+    border: none;
+
+    outline: none;
+
+    resize: none;
+
+    padding:
+        4px
+        50px
+        4px
+        4px;
+
+    font-size: 15px;
+
+    background: transparent;
+}
+
+.question-box textarea::placeholder {
+
+    color: #adb5bd;
+}
+
+
+/* ====================================
+   ASK BUTTON
+==================================== */
+
+#askButton {
+
+    position: absolute;
+
+    right: 12px;
+
+    bottom: 12px;
+
+    width: 38px;
+
+    height: 38px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: #212529;
+
+    color: white;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    cursor: pointer;
+
+    transition: 0.15s ease;
+}
+
+#askButton:hover {
+
+    transform:
+        translateY(-1px);
+}
+
+#askButton:disabled {
+
+    opacity: 0.5;
+
+    cursor: not-allowed;
+}
+
+
+/* ====================================
+   ANSWER CARD
+==================================== */
+
+.answer-card {
+
+    max-width: 850px;
+
+    margin:
+        20px auto 0;
+
+    border-radius: 20px;
+}
+
+.answer-heading {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+}
+
+.answer-icon {
+
+    width: 46px;
+    height: 46px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: #212529;
+
+    color: white;
+
+    border-radius: 12px;
+
+    font-size: 20px;
+}
+
+
+/* ====================================
+   ANSWER LOADING
+==================================== */
+
+.answer-loading {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-top: 20px;
+
+    color: #6c757d;
+
+    font-size: 14px;
+}
+
+
+/* ====================================
+   ANSWER
+==================================== */
+
+.answer-text {
+
+    margin-top: 20px;
+
+    padding: 18px;
+
+    border-radius: 13px;
+
+    background: #f8f9fa;
+
+    line-height: 1.7;
+
+    white-space: pre-wrap;
+
+    font-size: 15px;
+}
+
+
+/* ====================================
+   ERROR
+==================================== */
+
+.error-message {
+
+    margin-top: 15px;
+
+    padding:
+        12px 15px;
+
+    border-radius: 10px;
+
+    background: #f8d7da;
+
+    color: #842029;
+
+    font-size: 14px;
+}
+
+
+/* ====================================
+   FOOTER
+==================================== */
+
+footer {
+
+    text-align: center;
+
+    color: #6c757d;
+
+    padding: 35px 20px;
+}
+
+
+/* ====================================
+   MOBILE
+==================================== */
+
+@media (max-width: 576px) {
+
+    .hero {
+
+        padding-top: 45px;
+
+    }
+
+
+    .hero h1 {
+
+        font-size: 32px;
+
+    }
+
+
+    .main-card,
+    .answer-card {
+
+        margin-left: 10px;
+
+        margin-right: 10px;
+
+    }
+
+
+    .upload-area {
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+    }
+
+
+    .upload-btn {
+
+        width: 100%;
+
+    }
+
+
+    #pdfViewer {
+
+        height: 500px;
+
+    }
+
+}
