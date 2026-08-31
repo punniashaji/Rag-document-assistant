@@ -323,8 +323,22 @@ The goal of this project is to demonstrate a practical implementation of a **Ret
 
 It combines document processing, vector embeddings, semantic search, and generative AI into a single web application.
 
+
 ## 👨‍💻 Author
 
 **Punnia Shaji**
 
 Full-Stack Developer | JavaScript | Node.js | REST APIs | AI/RAG
+
+
+---
+
+## Screenshots
+
+### PDF Upload
+
+![PDF Upload](images/upload-success.png)
+
+### RAG Question Answering
+
+![RAG Answer](images/rag-answer.png)
