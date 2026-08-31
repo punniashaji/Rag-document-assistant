@@ -34,7 +34,6 @@ const app = express();
 const PORT =
     process.env.PORT || 3000;
 
-
 app.use(cors());
 
 app.use(express.json());
@@ -138,18 +137,9 @@ app.post(
 
         try {
 
-            console.log(
-                "\n===================================="
-            );
-
-            console.log(
-                "PDF received:",
-                req.file.originalname
-            );
-
-            console.log(
-                "Starting PDF processing..."
-            );
+            console.log("\n====================================");
+            console.log("PDF received:", req.file.originalname);
+            console.log("Starting PDF processing...");
 
 
             const result =
@@ -159,23 +149,10 @@ app.post(
                 );
 
 
-            console.log(
-                "PDF processing completed."
-            );
-
-            console.log(
-                "Documents:",
-                result.documents
-            );
-
-            console.log(
-                "Chunks:",
-                result.chunks
-            );
-
-            console.log(
-                "====================================\n"
-            );
+            console.log("PDF processing completed.");
+            console.log("Documents:", result.documents);
+            console.log("Chunks:", result.chunks);
+            console.log("====================================\n");
 
 
             return res.status(200).json({
@@ -201,7 +178,7 @@ app.post(
 
             console.error(
                 "Upload error:",
-                error
+                error.message
             );
 
 
@@ -272,10 +249,8 @@ app.post(
                 question.trim();
 
 
-            console.log(
-                "\nQuestion:",
-                cleanQuestion
-            );
+            console.log("\n====================================");
+            console.log("Question:", cleanQuestion);
 
 
             // ====================================
@@ -296,8 +271,11 @@ app.post(
                 );
 
 
+            console.log("Query embedding generated.");
+
+
             // ====================================
-            // SEARCH
+            // SEARCH LANCEDB
             // ====================================
 
             const results =
@@ -308,6 +286,10 @@ app.post(
 
 
             if (!results.length) {
+
+                console.log(
+                    "No relevant information found."
+                );
 
                 return res.status(404).json({
 
@@ -328,27 +310,21 @@ app.post(
             // CREATE CONTEXT
             // ====================================
 
-       const context =
-    results
-        .map((item, index) => {
-
-            console.log(
-                `\n========== CHUNK ${index + 1} ==========`
-            );
-
-            console.log(item.text);
-
-            return item.text;
-
-        })
-        .join("\n\n");
-
-console.log(
-    "\n========== END RETRIEVED CONTEXT ==========\n"
-);
+            const context =
+                results
+                    .map(item => item.text)
+                    .filter(text =>
+                        text &&
+                        text.trim()
+                    )
+                    .join("\n\n");
 
 
             if (!context.trim()) {
+
+                console.log(
+                    "Retrieved chunks contained no usable text."
+                );
 
                 return res.status(404).json({
 
@@ -360,9 +336,19 @@ console.log(
             }
 
 
+            console.log(
+                "Relevant document context prepared."
+            );
+
+
             // ====================================
             // GEMINI
             // ====================================
+
+            console.log(
+                "Sending context to Gemini..."
+            );
+
 
             const response =
                 await ai.models.generateContent({
@@ -373,7 +359,19 @@ console.log(
                     config: {
 
                         systemInstruction:
-                            "You are a document question-answering assistant. Answer only from the supplied document context. Do not use outside knowledge. If the answer is not present in the supplied context, say exactly that the information is not available in the document."
+                            `You are a document question-answering assistant.
+
+Answer the user's question using only the supplied document context.
+
+Do not use outside knowledge.
+
+Give a clear, natural and concise answer.
+
+Do not simply copy large portions of the document.
+
+If the answer is not available in the supplied context, say:
+
+"The information is not available in the document."`
 
                     },
 
@@ -401,6 +399,10 @@ Answer:`
 
             if (!answer) {
 
+                console.log(
+                    "Gemini returned an empty answer."
+                );
+
                 return res.status(500).json({
 
                     error:
@@ -414,6 +416,8 @@ Answer:`
             console.log(
                 "Answer generated successfully."
             );
+
+            console.log("====================================\n");
 
 
             // ====================================
@@ -434,7 +438,7 @@ Answer:`
 
             console.error(
                 "Question error:",
-                error
+                error.message
             );
 
 
@@ -463,7 +467,7 @@ app.use(
 
         console.error(
             "Server error:",
-            error
+            error.message
         );
 
 
