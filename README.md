@@ -79,8 +79,8 @@ The extracted text is divided into smaller chunks using LangChain's `RecursiveCh
 
 The current configuration uses:
 
-* Chunk size: `500`
-* Chunk overlap: `50`
+* Chunk size: `800`
+* Chunk overlap: `100`
 
 Chunking allows the application to retrieve smaller and more relevant sections of the document.
 
@@ -163,6 +163,10 @@ rag-document-assistant/
 │   ├── index.html
 │   ├── script.js
 │   └── style.css
+│
+├── images/
+│   ├── upload-success.png
+│   └── rag-answer.png
 │
 ├── .env.example
 ├── .gitignore
