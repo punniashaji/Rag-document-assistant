@@ -2,20 +2,16 @@ import "dotenv/config";
 
 import fs from "fs/promises";
 import path from "path";
-import os from "os";
 
 import { pipeline } from "@huggingface/transformers";
 
-import * as lancedb
-    from "@lancedb/lancedb";
+import * as lancedb from "@lancedb/lancedb";
 
 import {
     RecursiveCharacterTextSplitter
 } from "@langchain/textsplitters";
 
-import {
-    SimpleDirectoryReader
-} from "@llamaindex/readers/directory";
+import { PDFParse } from "pdf-parse";
 
 
 // ====================================
@@ -62,7 +58,6 @@ export async function embed(text) {
 
     }
 
-
     const output =
         await model(
             text,
@@ -72,11 +67,9 @@ export async function embed(text) {
             }
         );
 
-
     return Array.from(
         output.data
     );
-
 }
 
 
@@ -93,71 +86,93 @@ export async function ingestDocument(
         "Starting ingestion..."
     );
 
-
     console.log(
         "PDF:",
         filePath
     );
 
 
-    // ====================================
-    // CREATE TEMP DIRECTORY
-    // ====================================
-
-    const tempDirectory =
-        await fs.mkdtemp(
-            path.join(
-                os.tmpdir(),
-                "rag-pdf-"
-            )
-        );
-
-
-    // ====================================
-    // COPY PDF
-    // ====================================
-
-    const pdfName =
-        path.basename(filePath);
-
-
-    const tempPdfPath =
-        path.join(
-            tempDirectory,
-            pdfName
-        );
-
-
-    await fs.copyFile(
-        filePath,
-        tempPdfPath
-    );
-
-
-    console.log(
-        "Temporary PDF:",
-        tempPdfPath
-    );
-
-
     try {
 
         // ====================================
-        // READ PDF
+        // READ PDF FILE
         // ====================================
 
-        const reader =
-            new SimpleDirectoryReader();
+        console.log(
+            "Reading PDF file..."
+        );
 
-
-        const documents =
-            await reader.loadData(
-                tempDirectory
+        const pdfBuffer =
+            await fs.readFile(
+                filePath
             );
 
 
+        // ====================================
+        // EXTRACT PDF TEXT
+        // ====================================
+
         console.log(
-            `Loaded ${documents.length} document(s)`
+            "Extracting text from PDF..."
+        );
+
+        const parser =
+            new PDFParse({
+                data: pdfBuffer
+            });
+
+
+        const result =
+            await parser.getText();
+
+
+        const text =
+            result.text;
+
+
+        console.log(
+            `PDF pages: ${result.total}`
+        );
+
+        console.log(
+            `Extracted text length: ${text.length}`
+        );
+
+
+        // ====================================
+        // CLEAN PDF TEXT
+        // ====================================
+
+        const cleanText =
+            text
+                .replace(/\r/g, "")
+                .replace(/[ \t]+/g, " ")
+                .replace(/\n\s*\n\s*\n+/g, "\n\n")
+                .trim();
+
+
+        console.log(
+            `Clean text length: ${cleanText.length}`
+        );
+
+
+        // ====================================
+        // CHECK TEXT
+        // ====================================
+
+        if (
+            !cleanText
+        ) {
+
+            throw new Error(
+                "No readable text could be extracted from this PDF."
+            );
+
+        }
+
+
+        console.log(
+            "PDF text extraction successful."
         );
 
 
@@ -168,27 +183,47 @@ export async function ingestDocument(
         const textSplitter =
             new RecursiveCharacterTextSplitter({
 
-                chunkSize: 500,
+                chunkSize: 800,
 
-                chunkOverlap: 50
+                chunkOverlap: 100
 
             });
 
 
         // ====================================
-        // CREATE DATA
+        // CREATE CHUNKS
+        // ====================================
+
+        console.log(
+            "Creating text chunks..."
+        );
+
+
+        const chunks =
+            await textSplitter.splitText(
+                cleanText
+            );
+
+
+        console.log(
+            `Created ${chunks.length} chunks`
+        );
+
+
+        // ====================================
+        // CREATE EMBEDDINGS
         // ====================================
 
         const dataList = [];
 
 
         for (
-            const doc of documents
+            const chunk of chunks
         ) {
 
             if (
-                !doc.text ||
-                !doc.text.trim()
+                !chunk ||
+                !chunk.trim()
             ) {
 
                 continue;
@@ -196,52 +231,27 @@ export async function ingestDocument(
             }
 
 
-            const chunks =
-                await textSplitter.splitText(
-                    doc.text
+            const vector =
+                await embed(
+                    chunk
                 );
 
 
-            console.log(
-                `Creating ${chunks.length} chunks...`
-            );
+            dataList.push({
 
+                text:
+                    chunk,
 
-            for (
-                const chunk of chunks
-            ) {
+                vector:
+                    vector
 
-                if (
-                    !chunk ||
-                    !chunk.trim()
-                ) {
-
-                    continue;
-
-                }
-
-
-                const vector =
-                    await embed(chunk);
-
-
-                dataList.push({
-
-                    text:
-                        chunk,
-
-                    vector:
-                        vector
-
-                });
-
-            }
+            });
 
         }
 
 
         console.log(
-            `Created ${dataList.length} chunks`
+            `Created ${dataList.length} embedded chunks`
         );
 
 
@@ -254,7 +264,7 @@ export async function ingestDocument(
         ) {
 
             throw new Error(
-                "No text could be extracted from the PDF."
+                "No text chunks were created from the PDF."
             );
 
         }
@@ -283,13 +293,12 @@ export async function ingestDocument(
 
 
         // ====================================
-        // RETURN
+        // RETURN RESULT
         // ====================================
 
         return {
 
-            documents:
-                documents.length,
+            documents: 1,
 
             chunks:
                 dataList.length,
@@ -301,22 +310,14 @@ export async function ingestDocument(
 
     }
 
-    finally {
+    catch (error) {
 
-        // ====================================
-        // DELETE TEMP DIRECTORY
-        // ====================================
-
-        await fs.rm(
-
-            tempDirectory,
-
-            {
-                recursive: true,
-                force: true
-            }
-
+        console.error(
+            "Ingestion error:",
+            error
         );
+
+        throw error;
 
     }
 

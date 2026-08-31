@@ -303,7 +303,7 @@ app.post(
             const results =
                 await table
                     .search(queryVector)
-                    .limit(3)
+                    .limit(8)
                     .toArray();
 
 
@@ -328,13 +328,24 @@ app.post(
             // CREATE CONTEXT
             // ====================================
 
-            const context =
-                results
-                    .map(
-                        item => item.text
-                    )
-                    .filter(Boolean)
-                    .join("\n\n");
+       const context =
+    results
+        .map((item, index) => {
+
+            console.log(
+                `\n========== CHUNK ${index + 1} ==========`
+            );
+
+            console.log(item.text);
+
+            return item.text;
+
+        })
+        .join("\n\n");
+
+console.log(
+    "\n========== END RETRIEVED CONTEXT ==========\n"
+);
 
 
             if (!context.trim()) {
